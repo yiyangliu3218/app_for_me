@@ -1,0 +1,233 @@
+import React, { useState } from 'react';
+import { Plus, X } from 'lucide-react';
+
+export default function QuadrantTaskManager() {
+  const [tasks, setTasks] = useState({
+    q1: [],
+    q2: [],
+    q3: [],
+    q4: []
+  });
+  
+  const [newTask, setNewTask] = useState({
+    q1: '',
+    q2: '',
+    q3: '',
+    q4: ''
+  });
+
+  const quadrantLabels = {
+    q1: '重要且紧急',
+    q2: '重要不紧急',
+    q3: '不重要但紧急',
+    q4: '不重要不紧急'
+  };
+
+  const quadrantColors = {
+    q1: 'bg-red-50 border-red-200',
+    q2: 'bg-yellow-50 border-yellow-200',
+    q3: 'bg-blue-50 border-blue-200',
+    q4: 'bg-green-50 border-green-200'
+  };
+
+  const addTask = (quadrant) => {
+    if (newTask[quadrant].trim()) {
+      setTasks(prev => ({
+        ...prev,
+        [quadrant]: [...prev[quadrant], newTask[quadrant].trim()]
+      }));
+      setNewTask(prev => ({
+        ...prev,
+        [quadrant]: ''
+      }));
+    }
+  };
+
+  const removeTask = (quadrant, index) => {
+    setTasks(prev => ({
+      ...prev,
+      [quadrant]: prev[quadrant].filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleKeyPress = (e, quadrant) => {
+    if (e.key === 'Enter') {
+      addTask(quadrant);
+    }
+  };
+
+  const maxTasks = Math.max(...Object.values(tasks).map(taskList => taskList.length));
+  const minHeight = Math.max(300, maxTasks * 50 + 120);
+
+  return (
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">
+        四象限任务管理器
+      </h1>
+      
+      <div className="max-w-4xl mx-auto">
+        <div 
+          className="grid grid-cols-2 gap-4 border-4 border-gray-400 rounded-lg overflow-hidden"
+          style={{ minHeight: `${minHeight}px` }}
+        >
+          {/* 第一象限 - 重要且紧急 */}
+          <div className={`${quadrantColors.q1} p-4 border-r-2 border-b-2 border-gray-400`}>
+            <h2 className="text-lg font-semibold text-red-700 mb-3">
+              {quadrantLabels.q1}
+            </h2>
+            
+            <div className="space-y-2 mb-4">
+              {tasks.q1.map((task, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                  <span className="text-sm text-gray-700">{task}</span>
+                  <button
+                    onClick={() => removeTask('q1', index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask.q1}
+                onChange={(e) => setNewTask(prev => ({ ...prev, q1: e.target.value }))}
+                onKeyPress={(e) => handleKeyPress(e, 'q1')}
+                placeholder="添加任务..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-red-500"
+              />
+              <button
+                onClick={() => addTask('q1')}
+                className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* 第二象限 - 重要不紧急 */}
+          <div className={`${quadrantColors.q2} p-4 border-b-2 border-gray-400`}>
+            <h2 className="text-lg font-semibold text-yellow-700 mb-3">
+              {quadrantLabels.q2}
+            </h2>
+            
+            <div className="space-y-2 mb-4">
+              {tasks.q2.map((task, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                  <span className="text-sm text-gray-700">{task}</span>
+                  <button
+                    onClick={() => removeTask('q2', index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask.q2}
+                onChange={(e) => setNewTask(prev => ({ ...prev, q2: e.target.value }))}
+                onKeyPress={(e) => handleKeyPress(e, 'q2')}
+                placeholder="添加任务..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-yellow-500"
+              />
+              <button
+                onClick={() => addTask('q2')}
+                className="px-3 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-colors"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* 第三象限 - 不重要但紧急 */}
+          <div className={`${quadrantColors.q3} p-4 border-r-2 border-gray-400`}>
+            <h2 className="text-lg font-semibold text-blue-700 mb-3">
+              {quadrantLabels.q3}
+            </h2>
+            
+            <div className="space-y-2 mb-4">
+              {tasks.q3.map((task, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                  <span className="text-sm text-gray-700">{task}</span>
+                  <button
+                    onClick={() => removeTask('q3', index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask.q3}
+                onChange={(e) => setNewTask(prev => ({ ...prev, q3: e.target.value }))}
+                onKeyPress={(e) => handleKeyPress(e, 'q3')}
+                placeholder="添加任务..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={() => addTask('q3')}
+                className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* 第四象限 - 不重要不紧急 */}
+          <div className={`${quadrantColors.q4} p-4`}>
+            <h2 className="text-lg font-semibold text-green-700 mb-3">
+              {quadrantLabels.q4}
+            </h2>
+            
+            <div className="space-y-2 mb-4">
+              {tasks.q4.map((task, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                  <span className="text-sm text-gray-700">{task}</span>
+                  <button
+                    onClick={() => removeTask('q4', index)}
+                    className="text-red-500 hover:text-red-700 ml-2"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              ))}
+            </div>
+            
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newTask.q4}
+                onChange={(e) => setNewTask(prev => ({ ...prev, q4: e.target.value }))}
+                onKeyPress={(e) => handleKeyPress(e, 'q4')}
+                placeholder="添加任务..."
+                className="flex-1 px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+              <button
+                onClick={() => addTask('q4')}
+                className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
+              >
+                <Plus size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <div className="mt-6 text-center text-sm text-gray-600">
+          <p>按照艾森豪威尔矩阵管理你的任务：按重要性和紧急性分类</p>
+          <p>点击 + 按钮或按 Enter 键添加任务，点击 × 删除任务</p>
+        </div>
+      </div>
+    </div>
+  );
+}
